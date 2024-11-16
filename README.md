@@ -1,5 +1,11 @@
 # possessive-js
 
+[![npm version](https://img.shields.io/npm/v/possessive-js)](https://www.npmjs.com/package/possessive-js)
+[![npm downloads](https://img.shields.io/npm/dm/possessive-js)](https://www.npmjs.com/package/possessive-js)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Test Status](https://github.com/sunanmau5/possessive-js/workflows/CI/badge.svg)](https://github.com/sunanmau5/possessive-js/actions)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+
 A JavaScript library for handling singular possessive apostrophes with support for international names.
 
 ## Installation
