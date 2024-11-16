@@ -8,6 +8,16 @@
 
 A JavaScript library for handling singular possessive apostrophes with support for international names.
 
+## Features
+
+- Handles English possessive rules correctly
+- Supports international names (German, French, Nordic)
+- Case preservation
+- Configurable styles
+- Zero dependencies
+- Supports both CommonJS and ES Modules
+- Tiny bundle size (~8KB)
+
 ## Installation
 
 ```bash
@@ -17,11 +27,14 @@ npm install possessive-js
 ## Usage
 
 ```javascript
+// ESM
+import Possessive from "possessive-js";
+
+// CommonJS
 const Possessive = require("possessive-js");
 
-const possessive = new Possessive();
-
 // Basic usage
+const possessive = new Possessive();
 possessive.makePossessive("John"); // => "John's"
 possessive.makePossessive("Chris"); // => "Chris'"
 
@@ -35,17 +48,41 @@ const altPossessive = new Possessive({ style: "alternative" });
 altPossessive.makePossessive("Chris"); // => "Chris's"
 ```
 
-## Options
+## Configuration
 
 ```javascript
 const possessive = new Possessive({
-  style: "standard", // 'standard' or 'alternative'
-  enableFrenchRules: true, // Handle French names
-  enableGermanRules: true, // Handle German special characters
-  enableNordicRules: true // Handle Nordic special characters
+  // Use 'alternative' for names ending in 's' to add 's (Chris's)
+  // Use 'standard' for just apostrophe (Chris')
+  style: "standard",
+
+  // Language-specific rules
+  enableFrenchRules: true,
+  enableGermanRules: true,
+  enableNordicRules: true
 });
 ```
 
+## Special Cases
+
+### German Names
+
+- Names ending in 'ß': `Strauß → Strauß'`
+- Names with umlauts: `Müller → Müller's`
+
+### French Names
+
+- Names ending in silent letters: `François → François'`
+- Names with accents: `René → René's`
+
+### Nordic Names
+
+- Names with special characters: `Åberg → Åberg's`
+
+## Contributing
+
+Pull requests are welcome! For major changes, please open an issue first.
+
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT © Sunan Regi Maunakea
