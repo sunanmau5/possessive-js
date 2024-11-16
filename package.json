@@ -1,0 +1,34 @@
+{
+  "name": "possessive-js",
+  "version": "1.0.0",
+  "description": "A JavaScript library for handling singular possessive apostrophes with support for international names",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint ."
+  },
+  "keywords": [
+    "possessive",
+    "apostrophe",
+    "grammar",
+    "international",
+    "names",
+    "string",
+    "text-processing"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "jest": "^29.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sunanmau5/possessive-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sunanmau5/possessive-js/issues"
+  },
+  "homepage": "https://github.com/sunanmau5/possessive-js#readme",
+  "packageManager": "npm@10.5.2+sha512.707546ed0109c09759c8eacad1d297e6e7f747915dd04f007264844b58cbb4ee76513d5e9d4299f7a3a7c3fc70ab809bad36449c3baed957fd902421fd2775db"
+}
