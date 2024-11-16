@@ -1,4 +1,4 @@
-const Possessive = require("../index");
+const Possessive = require("../src/index");
 
 describe("Possessive", () => {
   let possessive;
