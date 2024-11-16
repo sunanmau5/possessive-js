@@ -1,12 +1,27 @@
 {
   "name": "possessive-js",
+  "author": "Sunan Regi Maunakea",
+  "license": "MIT",
   "version": "1.0.0",
   "description": "A JavaScript library for handling singular possessive apostrophes with support for international names",
-  "main": "index.js",
   "scripts": {
+    "clean": "rm -rf dist",
+    "build": "npm run clean && rollup -c rollup.config.mjs",
+    "prepublishOnly": "npm run build",
     "test": "jest",
-    "lint": "eslint ."
+    "release": "npm run test && npm version"
   },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "possessive",
     "apostrophe",
@@ -16,8 +31,6 @@
     "string",
     "text-processing"
   ],
-  "author": "Your Name",
-  "license": "MIT",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.1",
     "@rollup/plugin-node-resolve": "^15.3.0",
