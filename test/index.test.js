@@ -51,10 +51,10 @@ describe("Possessive", () => {
       expect(possessive.makePossessive("Jules")).toBe("Jules'");
     });
 
-    test("names ending in s with alternative style (should still use only apostrophe)", () => {
+    test("names ending in s with alternative style", () => {
       const altPossessive = new Possessive({ style: "alternative" });
-      expect(altPossessive.makePossessive("François")).toBe("François'");
-      expect(altPossessive.makePossessive("Jacques")).toBe("Jacques'");
+      expect(altPossessive.makePossessive("François")).toBe("François's");
+      expect(altPossessive.makePossessive("Jacques")).toBe("Jacques's");
     });
 
     test("names ending in silent x", () => {

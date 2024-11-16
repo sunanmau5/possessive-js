@@ -147,19 +147,17 @@ class Possessive {
       return `${noun}'`;
     }
 
-    if (
-      this.options.enableFrenchRules &&
-      noun.endsWith("s") &&
-      this.isFrenchName(noun)
-    ) {
-      return `${noun}'`;
-    }
-
     if (noun.endsWith("s")) {
-      return this.options.style === "alternative" ? `${noun}'s` : `${noun}'`;
+      const suffix = this.options.style === "alternative" ? "'s" : "'";
+      return noun === noun.toUpperCase()
+        ? noun + suffix.toUpperCase()
+        : noun + suffix;
     }
 
-    return `${noun}'s`;
+    const suffix = "'s";
+    return noun === noun.toUpperCase()
+      ? noun + suffix.toUpperCase()
+      : noun + suffix;
   }
 
   isFrenchSilentEnding(noun) {
