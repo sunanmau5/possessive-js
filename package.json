@@ -2,7 +2,7 @@
   "name": "possessive-js",
   "author": "Sunan Regi Maunakea",
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A JavaScript library for handling singular possessive apostrophes with support for international names",
   "scripts": {
     "clean": "rm -rf dist",
