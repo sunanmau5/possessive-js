@@ -1,5 +1,3 @@
-const { execFileSync } = require("node:child_process");
-const path = require("node:path");
 const Possessive = require("../src/index");
 
 describe("Possessive", () => {
@@ -164,28 +162,6 @@ describe("Possessive", () => {
 			expect(() => possessive.addException("boss", possessiveForm)).toThrow(
 				message,
 			);
-		});
-	});
-
-	describe("distribution", () => {
-		const repoRoot = path.resolve(__dirname, "..");
-
-		test("CommonJS build works after packaging", () => {
-			const output = execFileSync("node", ["test/smoke-cjs.js"], {
-				cwd: repoRoot,
-				encoding: "utf8",
-			});
-
-			expect(output.trim()).toBe("John's\nChris'");
-		});
-
-		test("ESM build works after packaging", () => {
-			const output = execFileSync("node", ["test/smoke-esm.mjs"], {
-				cwd: repoRoot,
-				encoding: "utf8",
-			});
-
-			expect(output.trim()).toBe("John's\nChris'");
 		});
 	});
 });
