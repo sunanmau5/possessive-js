@@ -4,19 +4,19 @@
 [![npm downloads](https://img.shields.io/npm/dm/possessive-js)](https://www.npmjs.com/package/possessive-js)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Test Status](https://github.com/sunanmau5/possessive-js/workflows/CI/badge.svg)](https://github.com/sunanmau5/possessive-js/actions)
-[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-A JavaScript library for handling singular possessive apostrophes with support for international names.
+A small JavaScript library for formatting singular possessive forms with predictable English defaults, special-case pronouns, and ESM-first package support.
 
 ## Features
 
-- Handles English possessive rules correctly
-- Supports international names (German, French, Nordic)
-- Case preservation
-- Configurable styles
-- Zero dependencies
-- Supports both CommonJS and ES Modules
-- Tiny bundle size (~8KB)
+- Small public API
+- ESM-first usage and package exports
+- Singular possessive formatting for common English cases
+- Configurable handling for words ending in `s`
+- Special-case pronoun exceptions such as `it -> its`
+- Case-preserving output for lowercase, uppercase, and title-case inputs
+- Published TypeScript declarations
+- Zero runtime dependencies
 
 ## Installation
 
@@ -24,64 +24,105 @@ A JavaScript library for handling singular possessive apostrophes with support f
 npm install possessive-js
 ```
 
+Requires Node.js 18 or newer.
+
 ## Usage
 
 ```javascript
-// ESM
 import Possessive from "possessive-js";
 
-// CommonJS
-const Possessive = require("possessive-js");
-
-// Basic usage
 const possessive = new Possessive();
+
 possessive.makePossessive("John"); // => "John's"
 possessive.makePossessive("Chris"); // => "Chris'"
+possessive.makePossessive("It"); // => "Its"
+possessive.makePossessive("STRAUSS"); // => "STRAUSS'"
 
-// International names
-possessive.makePossessive("François"); // => "François'"
-possessive.makePossessive("Strauß"); // => "Strauß'"
-possessive.makePossessive("Müller"); // => "Müller's"
-
-// Alternative style
-const altPossessive = new Possessive({ style: "alternative" });
-altPossessive.makePossessive("Chris"); // => "Chris's"
+const alternative = new Possessive({ style: "alternative" });
+alternative.makePossessive("Chris"); // => "Chris's"
 ```
 
-## Configuration
+CommonJS compatibility:
+
+```javascript
+const Possessive = require("possessive-js");
+
+const possessive = new Possessive();
+possessive.makePossessive("John"); // => "John's"
+```
+
+## API
+
+Generated API reference: [`docs/API.md`](./docs/API.md)
+
+### `new Possessive(options?)`
 
 ```javascript
 const possessive = new Possessive({
-  // Use 'alternative' for names ending in 's' to add 's (Chris's)
-  // Use 'standard' for just apostrophe (Chris')
   style: "standard",
-
-  // Language-specific rules
   enableFrenchRules: true,
   enableGermanRules: true,
   enableNordicRules: true
 });
 ```
 
-## Special Cases
+Options:
 
-### German Names
+- `style`: `"standard"` or `"alternative"`. Controls whether words ending in `s` become `Chris'` or `Chris's`.
+- `enableGermanRules`: when `true`, words ending in `ß` receive a trailing apostrophe, such as `Strauß -> Strauß'`.
+- `enableFrenchRules`: reserved for compatibility with future language-specific rules.
+- `enableNordicRules`: reserved for compatibility with future language-specific rules.
 
-- Names ending in 'ß': `Strauß → Strauß'`
-- Names with umlauts: `Müller → Müller's`
+### `makePossessive(noun)`
 
-### French Names
+Formats a singular noun or name into its possessive form.
 
-- Names ending in silent letters: `François → François'`
-- Names with accents: `René → René's`
+Examples:
 
-### Nordic Names
+- `John -> John's`
+- `Chris -> Chris'`
+- `James -> James'`
+- `Strauß -> Strauß'`
+- `It -> Its`
+- `THEY -> THEIR`
 
-- Names with special characters: `Åberg → Åberg's`
+Notes:
 
-## Contributing
+- Input is trimmed before formatting.
+- Existing possessive strings are not specially detected or normalized.
+- Mixed-case inputs are handled conservatively.
 
-Pull requests are welcome! For major changes, please open an issue first.
+### `addException(noun, possessiveForm)`
+
+Registers a custom exact-word exception before suffix rules are applied.
+
+```javascript
+const possessive = new Possessive();
+possessive.addException("boss", "bosses'");
+
+possessive.makePossessive("boss"); // => "bosses'"
+possessive.makePossessive("Boss"); // => "Bosses'"
+possessive.makePossessive("BOSS"); // => "BOSSES'"
+```
+
+## Non-goals
+
+- Plural possessives are out of scope.
+- The library does not attempt full grammar or language detection.
+- Mixed-case inputs are handled conservatively rather than with linguistic inference.
+
+## Development
+
+```bash
+npm run format
+npm run lint
+npm run docs
+npm run verify
+```
+
+`docs` regenerates the API reference from JSDoc comments in `src/index.js`.
+
+`verify` runs linting, coverage, build, CJS/ESM smoke tests, API docs generation, and a package dry-run.
 
 ## License
 
