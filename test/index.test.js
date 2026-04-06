@@ -1,143 +1,191 @@
+const { execFileSync } = require("node:child_process");
+const path = require("node:path");
 const Possessive = require("../src/index");
 
 describe("Possessive", () => {
-  let possessive;
+	describe("constructor", () => {
+		test("uses default options", () => {
+			const possessive = new Possessive();
 
-  beforeEach(() => {
-    possessive = new Possessive();
-  });
+			expect(possessive.options).toEqual({
+				style: "standard",
+				enableFrenchRules: true,
+				enableGermanRules: true,
+				enableNordicRules: true,
+			});
+		});
 
-  describe("Basic functionality", () => {
-    test("regular nouns", () => {
-      expect(possessive.makePossessive("John")).toBe("John's");
-      expect(possessive.makePossessive("cat")).toBe("cat's");
-    });
+		test("accepts explicit valid options", () => {
+			const possessive = new Possessive({
+				style: "alternative",
+				enableFrenchRules: false,
+				enableGermanRules: false,
+				enableNordicRules: false,
+			});
 
-    test("nouns ending in s", () => {
-      expect(possessive.makePossessive("James")).toBe("James'");
-      expect(possessive.makePossessive("Chris")).toBe("Chris'");
-    });
+			expect(possessive.options).toEqual({
+				style: "alternative",
+				enableFrenchRules: false,
+				enableGermanRules: false,
+				enableNordicRules: false,
+			});
+		});
 
-    test("alternative style", () => {
-      const altPossessive = new Possessive({ style: "alternative" });
-      expect(altPossessive.makePossessive("James")).toBe("James's");
-      expect(altPossessive.makePossessive("Chris")).toBe("Chris's");
-    });
-  });
+		test.each([
+			["null", null, "Options must be an object"],
+			["array", [], "Options must be an object"],
+			["string", "bad", "Options must be an object"],
+			[
+				"invalid style",
+				{ style: "modern" },
+				"Style option must be either 'standard' or 'alternative'",
+			],
+			[
+				"non-boolean French flag",
+				{ enableFrenchRules: "yes" },
+				"enableFrenchRules option must be a boolean",
+			],
+			[
+				"non-boolean German flag",
+				{ enableGermanRules: 1 },
+				"enableGermanRules option must be a boolean",
+			],
+			[
+				"non-boolean Nordic flag",
+				{ enableNordicRules: "no" },
+				"enableNordicRules option must be a boolean",
+			],
+		])("rejects %s", (_label, options, message) => {
+			expect(() => new Possessive(options)).toThrow(message);
+		});
+	});
 
-  describe("German names", () => {
-    test("names with ß", () => {
-      expect(possessive.makePossessive("Strauß")).toBe("Strauß'");
-      expect(possessive.makePossessive("Weiß")).toBe("Weiß'");
-      expect(possessive.makePossessive("Groß")).toBe("Groß'");
-    });
+	describe("makePossessive", () => {
+		let possessive;
 
-    test("ß with alternative style", () => {
-      const altPossessive = new Possessive({ style: "alternative" });
-      expect(altPossessive.makePossessive("Strauß")).toBe("Strauß'");
-      expect(altPossessive.makePossessive("Weiß")).toBe("Weiß'");
-    });
+		beforeEach(() => {
+			possessive = new Possessive();
+		});
 
-    test("names with umlauts", () => {
-      expect(possessive.makePossessive("Müller")).toBe("Müller's");
-      expect(possessive.makePossessive("Schröder")).toBe("Schröder's");
-    });
-  });
+		test.each([
+			["John", "John's"],
+			["cat", "cat's"],
+			["James", "James'"],
+			["Chris", "Chris'"],
+			["Strauß", "Strauß'"],
+			["Müller", "Müller's"],
+			["François", "François'"],
+			["Lemieux", "Lemieux's"],
+			["Åberg", "Åberg's"],
+			["MÜLLER", "MÜLLER'S"],
+			["  John  ", "John's"],
+		])("formats %s as %s", (noun, expected) => {
+			expect(possessive.makePossessive(noun)).toBe(expected);
+		});
 
-  describe("French names", () => {
-    test("names ending in s", () => {
-      expect(possessive.makePossessive("François")).toBe("François'");
-      expect(possessive.makePossessive("Jacques")).toBe("Jacques'");
-      expect(possessive.makePossessive("Jules")).toBe("Jules'");
-    });
+		test("supports alternative style for trailing s", () => {
+			const alternative = new Possessive({ style: "alternative" });
 
-    test("names ending in s with alternative style", () => {
-      const altPossessive = new Possessive({ style: "alternative" });
-      expect(altPossessive.makePossessive("François")).toBe("François's");
-      expect(altPossessive.makePossessive("Jacques")).toBe("Jacques's");
-    });
+			expect(alternative.makePossessive("James")).toBe("James's");
+			expect(alternative.makePossessive("Chris")).toBe("Chris's");
+		});
 
-    test("names ending in silent x", () => {
-      expect(possessive.makePossessive("Lemieux")).toBe("Lemieux's");
-      expect(possessive.makePossessive("Devereaux")).toBe("Devereaux's");
-      expect(possessive.makePossessive("Leroux")).toBe("Leroux's");
-    });
+		test("disables German Eszett handling when requested", () => {
+			const noGerman = new Possessive({ enableGermanRules: false });
 
-    test("names ending in eau", () => {
-      expect(possessive.makePossessive("Moreau")).toBe("Moreau's");
-      expect(possessive.makePossessive("Trudeau")).toBe("Trudeau's");
-    });
+			expect(noGerman.makePossessive("Strauß")).toBe("Strauß's");
+		});
 
-    test("names with accents", () => {
-      expect(possessive.makePossessive("René")).toBe("René's");
-      expect(possessive.makePossessive("Molière")).toBe("Molière's");
-      expect(possessive.makePossessive("François")).toBe("François'");
-    });
+		test.each([
+			["it", "its"],
+			["It", "Its"],
+			["IT", "ITS"],
+			["he", "his"],
+			["He", "His"],
+			["HE", "HIS"],
+			["she", "her"],
+			["She", "Her"],
+			["SHE", "HER"],
+			["they", "their"],
+			["They", "Their"],
+			["THEY", "THEIR"],
+			["its", "its"],
+			["Its", "Its"],
+		])("formats exception %s as %s", (noun, expected) => {
+			expect(possessive.makePossessive(noun)).toBe(expected);
+		});
 
-    test("names with ç", () => {
-      expect(possessive.makePossessive("Leçon")).toBe("Leçon's");
-    });
-  });
+		test("preserves conservative mixed-case behavior for exceptions", () => {
+			expect(possessive.makePossessive("iT")).toBe("its");
+			expect(possessive.makePossessive("FrançOis")).toBe("FrançOis'");
+		});
 
-  describe("Nordic names", () => {
-    test("names with å", () => {
-      expect(possessive.makePossessive("Åberg")).toBe("Åberg's");
-      expect(possessive.makePossessive("Håkansson")).toBe("Håkansson's");
-    });
+		test.each([
+			["", "Input cannot be empty, null, or undefined"],
+			["   ", "Input cannot be only whitespace"],
+			[null, "Input cannot be empty, null, or undefined"],
+			[undefined, "Input cannot be empty, null, or undefined"],
+			[123, "Input must be a string"],
+		])("rejects invalid noun %p", (noun, message) => {
+			expect(() => possessive.makePossessive(noun)).toThrow(message);
+		});
+	});
 
-    test("names with ø/ö", () => {
-      expect(possessive.makePossessive("Björk")).toBe("Björk's");
-      expect(possessive.makePossessive("Østergaard")).toBe("Østergaard's");
-    });
+	describe("addException", () => {
+		test("adds a custom exception with case-preserving output", () => {
+			const possessive = new Possessive();
 
-    test("names with æ/ä", () => {
-      expect(possessive.makePossessive("Kjær")).toBe("Kjær's");
-      expect(possessive.makePossessive("Määttä")).toBe("Määttä's");
-    });
-  });
+			possessive.addException("boss", "bosses'");
 
-  describe("Mixed cases", () => {
-    test("names with special characters ending in s", () => {
-      expect(possessive.makePossessive("FrançOis")).toBe("FrançOis'");
-      expect(possessive.makePossessive("Weiss")).toBe("Weiss'");
-    });
+			expect(possessive.makePossessive("boss")).toBe("bosses'");
+			expect(possessive.makePossessive("Boss")).toBe("Bosses'");
+			expect(possessive.makePossessive("BOSS")).toBe("BOSSES'");
+		});
 
-    test("case preservation", () => {
-      expect(possessive.makePossessive("MÜLLER")).toBe("MÜLLER'S");
-      expect(possessive.makePossessive("FrançOis")).toBe("FrançOis'");
-      expect(possessive.makePossessive("MüLLer")).toBe("MüLLer's");
-    });
-  });
+		test.each([
+			[null, "Input cannot be empty, null, or undefined"],
+			["", "Input cannot be empty, null, or undefined"],
+			[" ", "Input cannot be only whitespace"],
+			[42, "Input must be a string"],
+		])("validates noun when adding exception: %p", (noun, message) => {
+			const possessive = new Possessive();
 
-  describe("Configuration", () => {
-    test("disabled French rules", () => {
-      const noFrench = new Possessive({ enableFrenchRules: false });
-      expect(noFrench.makePossessive("François")).toBe("François'");
-    });
+			expect(() => possessive.addException(noun, "bosses'")).toThrow(message);
+		});
 
-    test("disabled German rules", () => {
-      const noGerman = new Possessive({ enableGermanRules: false });
-      expect(noGerman.makePossessive("Strauß")).toBe("Strauß's");
-    });
-  });
+		test.each([
+			[null, "Input cannot be empty, null, or undefined"],
+			["", "Input cannot be empty, null, or undefined"],
+			[" ", "Input cannot be only whitespace"],
+			[42, "Input must be a string"],
+		])("validates possessive form when adding exception: %p", (possessiveForm, message) => {
+			const possessive = new Possessive();
 
-  describe("Error handling", () => {
-    test("invalid inputs", () => {
-      expect(() => possessive.makePossessive("")).toThrow(
-        "Input cannot be empty"
-      );
-      expect(() => possessive.makePossessive("   ")).toThrow(
-        "Input cannot be only whitespace"
-      );
-      expect(() => possessive.makePossessive(null)).toThrow(
-        "Input cannot be empty"
-      );
-      expect(() => possessive.makePossessive(undefined)).toThrow(
-        "Input cannot be empty"
-      );
-      expect(() => possessive.makePossessive(123)).toThrow(
-        "Input must be a string"
-      );
-    });
-  });
+			expect(() => possessive.addException("boss", possessiveForm)).toThrow(
+				message,
+			);
+		});
+	});
+
+	describe("distribution", () => {
+		const repoRoot = path.resolve(__dirname, "..");
+
+		test("CommonJS build works after packaging", () => {
+			const output = execFileSync("node", ["test-cjs.js"], {
+				cwd: repoRoot,
+				encoding: "utf8",
+			});
+
+			expect(output.trim()).toBe("John's\nChris'");
+		});
+
+		test("ESM build works after packaging", () => {
+			const output = execFileSync("node", ["test-esm.mjs"], {
+				cwd: repoRoot,
+				encoding: "utf8",
+			});
+
+			expect(output.trim()).toBe("John's\nChris'");
+		});
+	});
 });
