@@ -1,16 +1,16 @@
-## [0.2.1](https://github.com/sunanmau5/possessive-js/compare/v0.2.0...v0.2.1) (2026-04-06)
-
-
-### Bug Fixes
-
-* decouple tests from build output ([2dcb27a](https://github.com/sunanmau5/possessive-js/commit/2dcb27a7fbb9e2d0501fb0e3b6343b27a7725324))
-* track smoke test fixtures ([23ba7b1](https://github.com/sunanmau5/possessive-js/commit/23ba7b17eceba16826ab082156d156bb4e3b52c4))
-
 # Changelog
 
 All notable changes to this project will be documented in this file.
 
-The changelog is generated from Conventional Commits and then reviewed manually for release quality. While the package is in `0.x`, minor releases may include breaking changes.
+The changelog is maintained manually. Draft release notes can be generated from Conventional Commits, but releases should be reviewed and curated before they are committed.
+
+## [0.2.1] - 2026-04-06
+
+### Fixed
+
+- Decoupled Jest coverage tests from build output so CI can run on a clean checkout.
+- Moved distribution validation to tracked smoke fixtures that run after build.
+- Updated GitHub Actions dependencies to Node 24-compatible action versions.
 
 ## [0.2.0] - 2026-04-06
 

@@ -22,9 +22,6 @@ npm run changelog
 npm run test:coverage
 npm run docs
 npm run build
-npm run release:patch
-npm run release:minor
-npm run release:version -- 0.2.1
 npm run verify
 ```
 
@@ -33,11 +30,10 @@ What they do:
 - `format`: formats source, tests, docs, and package metadata with Biome.
 - `lint`: runs Biome lint checks.
 - `test:coverage`: runs Jest with enforced 100% coverage thresholds.
-- `changelog`: updates the most recent release section in `CHANGELOG.md` from Conventional Commits.
+- `changelog`: generates draft release notes from Conventional Commits. Review and edit the file manually afterward.
 - `docs`: regenerates the API reference from JSDoc in `src/index.js`.
 - `build`: creates the CommonJS and ESM bundles in `dist/`.
 - `verify`: runs the full pre-release validation flow.
-- `release:*`: runs the manual release flow and creates a tag only when explicitly invoked.
 
 ## Contribution Guidelines
 
@@ -54,8 +50,9 @@ Before opening a pull request:
 
 1. Run `npm run verify`.
 2. Review the generated docs if you changed public APIs or comments.
-3. Run `npm run changelog` and review `CHANGELOG.md` when user-facing behavior changes.
-4. Keep commits focused and explain any breaking change clearly.
+3. Update `CHANGELOG.md` manually when user-facing behavior changes.
+4. Use `npm run changelog` only as a draft generator if helpful.
+5. Keep commits focused and explain any breaking change clearly.
 
 ## Local Hooks
 
@@ -66,8 +63,8 @@ This repo uses Husky:
 
 This keeps normal commits fast while still blocking broken pushes.
 
-## Release Notes
+## Maintainer Notes
 
 - Breaking changes should be called out explicitly in `CHANGELOG.md`.
 - This project is currently in `0.x`, so minor releases may include breaking changes.
-- Normal commits must not create tags. Tags are reserved for explicit releases only.
+- Release mechanics and tagging policy are maintainer concerns and are intentionally omitted from the public README.

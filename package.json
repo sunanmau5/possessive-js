@@ -23,7 +23,7 @@
 		"smoke:esm": "node test/smoke-esm.mjs",
 		"smoke": "npm run smoke:cjs && npm run smoke:esm",
 		"verify": "npm run lint && npm run test:coverage && npm run build && npm run smoke && npm run docs && npm run pack:dry-run",
-		"version": "npm run changelog && git add CHANGELOG.md package.json package-lock.json",
+		"version": "git add CHANGELOG.md package.json package-lock.json",
 		"release:patch": "npm version patch",
 		"release:minor": "npm version minor",
 		"release:version": "npm version"
