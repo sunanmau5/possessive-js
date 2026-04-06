@@ -116,13 +116,46 @@ possessive.makePossessive("BOSS"); // => "BOSSES'"
 ```bash
 npm run format
 npm run lint
+npm run changelog
 npm run docs
+npm run release:patch
+npm run release:minor
+npm run release:version -- 0.2.1
 npm run verify
 ```
 
 `docs` regenerates the API reference from JSDoc comments in `src/index.js`.
 
+`changelog` updates the latest changelog section from Conventional Commit history.
+
 `verify` runs linting, coverage, build, CJS/ESM smoke tests, API docs generation, and a package dry-run.
+
+## Release Workflow
+
+- Normal commits do not create tags.
+- `pre-commit` formats and lints staged files through Husky and lint-staged.
+- `pre-push` runs `npm run verify` through Husky.
+- Tags are created only when you run an explicit release command.
+
+Typical release flow:
+
+```bash
+npm run release:patch
+```
+
+or
+
+```bash
+npm run release:minor
+```
+
+or for an exact version:
+
+```bash
+npm run release:version -- 0.2.1
+```
+
+Those commands run verification first, update `CHANGELOG.md`, bump the version, and create the release tag. Push the release commit and tag explicitly afterward.
 
 ## License
 

@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on Keep a Changelog and this project follows Semantic Versioning for `1.x` releases. While the package is in `0.x`, minor releases may include breaking changes.
+The changelog is generated from Conventional Commits and then reviewed manually for release quality. While the package is in `0.x`, minor releases may include breaking changes.
 
 ## [0.2.0] - 2026-04-06
 
