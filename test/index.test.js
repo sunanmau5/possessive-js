@@ -169,13 +169,9 @@ describe("Possessive", () => {
 
 	describe("distribution", () => {
 		const repoRoot = path.resolve(__dirname, "..");
-		const cjsSmokeScript =
-			"const path = require('node:path'); const Possessive = require(path.join(process.cwd(), 'dist', 'index.js')); const possessive = new Possessive(); console.log(possessive.makePossessive('John')); console.log(possessive.makePossessive('Chris'));";
-		const esmSmokeScript =
-			"import path from 'node:path'; import { pathToFileURL } from 'node:url'; const moduleUrl = pathToFileURL(path.join(process.cwd(), 'dist', 'index.mjs')).href; const { default: Possessive } = await import(moduleUrl); const possessive = new Possessive(); console.log(possessive.makePossessive('John')); console.log(possessive.makePossessive('Chris'));";
 
 		test("CommonJS build works after packaging", () => {
-			const output = execFileSync("node", ["-e", cjsSmokeScript], {
+			const output = execFileSync("node", ["test-cjs.js"], {
 				cwd: repoRoot,
 				encoding: "utf8",
 			});
@@ -184,14 +180,10 @@ describe("Possessive", () => {
 		});
 
 		test("ESM build works after packaging", () => {
-			const output = execFileSync(
-				"node",
-				["--input-type=module", "-e", esmSmokeScript],
-				{
-					cwd: repoRoot,
-					encoding: "utf8",
-				},
-			);
+			const output = execFileSync("node", ["test-esm.mjs"], {
+				cwd: repoRoot,
+				encoding: "utf8",
+			});
 
 			expect(output.trim()).toBe("John's\nChris'");
 		});
