@@ -171,7 +171,7 @@ describe("Possessive", () => {
 		const repoRoot = path.resolve(__dirname, "..");
 
 		test("CommonJS build works after packaging", () => {
-			const output = execFileSync("node", ["test-cjs.js"], {
+			const output = execFileSync("node", ["test/smoke-cjs.js"], {
 				cwd: repoRoot,
 				encoding: "utf8",
 			});
@@ -180,7 +180,7 @@ describe("Possessive", () => {
 		});
 
 		test("ESM build works after packaging", () => {
-			const output = execFileSync("node", ["test-esm.mjs"], {
+			const output = execFileSync("node", ["test/smoke-esm.mjs"], {
 				cwd: repoRoot,
 				encoding: "utf8",
 			});
