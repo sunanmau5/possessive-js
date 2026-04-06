@@ -2,7 +2,7 @@
 	"name": "possessive-js",
 	"author": "Sunan Regi Maunakea",
 	"license": "MIT",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"description": "A small JavaScript library for formatting singular English possessive forms",
 	"scripts": {
 		"build": "npm run clean && rollup -c rollup.config.mjs",
