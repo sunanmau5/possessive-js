@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Test Status](https://github.com/sunanmau5/possessive-js/workflows/CI/badge.svg)](https://github.com/sunanmau5/possessive-js/actions)
 
-A small JavaScript library for formatting singular possessive forms with predictable English defaults, special-case pronouns, and ESM-first package support.
+A small JavaScript library for formatting singular English possessive forms with predictable defaults and ESM-first package support.
 
 ## Features
 
@@ -36,7 +36,7 @@ const possessive = new Possessive();
 possessive.makePossessive("John"); // => "John's"
 possessive.makePossessive("Chris"); // => "Chris'"
 possessive.makePossessive("It"); // => "Its"
-possessive.makePossessive("STRAUSS"); // => "STRAUSS'"
+possessive.makePossessive("Strauss"); // => "Strauss'"
 
 const alternative = new Possessive({ style: "alternative" });
 alternative.makePossessive("Chris"); // => "Chris's"
@@ -59,19 +59,13 @@ Generated API reference: [`docs/API.md`](./docs/API.md)
 
 ```javascript
 const possessive = new Possessive({
-  style: "standard",
-  enableFrenchRules: true,
-  enableGermanRules: true,
-  enableNordicRules: true
+  style: "standard"
 });
 ```
 
 Options:
 
 - `style`: `"standard"` or `"alternative"`. Controls whether words ending in `s` become `Chris'` or `Chris's`.
-- `enableGermanRules`: when `true`, words ending in `ß` receive a trailing apostrophe, such as `Strauß -> Strauß'`.
-- `enableFrenchRules`: reserved for compatibility with future language-specific rules.
-- `enableNordicRules`: reserved for compatibility with future language-specific rules.
 
 ### `makePossessive(noun)`
 
@@ -82,15 +76,24 @@ Examples:
 - `John -> John's`
 - `Chris -> Chris'`
 - `James -> James'`
-- `Strauß -> Strauß'`
+- `Strauss -> Strauss'`
 - `It -> Its`
 - `THEY -> THEIR`
 
 Notes:
 
 - Input is trimmed before formatting.
+- Custom exceptions take precedence over the built-in suffix rules.
 - Existing possessive strings are not specially detected or normalized.
 - Mixed-case inputs are handled conservatively.
+- The package is intentionally English-only.
+
+### Real-World Use Cases
+
+- Generated UI labels: `${possessive.makePossessive(companyName)} settings`
+- Profile and ownership pages: `${possessive.makePossessive(userName)} dashboard`
+- CMS and publishing systems generating titles from author or organization names
+- Emails, exports, and PDFs that need the same possessive formatting rules as the main app
 
 ### `addException(noun, possessiveForm)`
 
@@ -109,7 +112,10 @@ possessive.makePossessive("BOSS"); // => "BOSSES'"
 
 - Plural possessives are out of scope.
 - The library does not attempt full grammar or language detection.
+- Non-English language support is out of scope.
 - Mixed-case inputs are handled conservatively rather than with linguistic inference.
+
+If your product localizes beyond English, use this package only for the English slice of that localization system.
 
 ## Development
 

@@ -10,34 +10,21 @@
  * @typedef {Object} PossessiveOptions
  * @property {'standard' | 'alternative'} [style='standard'] Selects the suffix used for nouns ending in `s`.
  * `standard` returns `Chris'` while `alternative` returns `Chris's`.
- * @property {boolean} [enableFrenchRules=true] Reserved for compatibility with future language-specific rules.
- * @property {boolean} [enableGermanRules=true] Enables special handling for nouns ending in `ß`, such as `Strauß -> Strauß'`.
- * @property {boolean} [enableNordicRules=true] Reserved for compatibility with future language-specific rules.
  */
 
 const VALID_STYLES = new Set(["standard", "alternative"]);
-const BOOLEAN_OPTIONS = [
-	"enableFrenchRules",
-	"enableGermanRules",
-	"enableNordicRules",
-];
 const DEFAULT_OPTIONS = {
 	style: "standard",
-	enableFrenchRules: true,
-	enableGermanRules: true,
-	enableNordicRules: true,
 };
-const ESZETT = "ß";
 
 /**
- * Formats singular nouns and names into possessive form.
+ * Formats singular English nouns and names into possessive form.
  *
  * The library is intentionally small and explicit. It handles a predictable
- * set of English-oriented rules, a small set of exception words, and the
- * `ß` suffix case when German rules are enabled.
+ * set of English-oriented rules and a small set of exception words.
  *
- * It does not try to infer plural possessives or perform full language
- * detection. Inputs are trimmed before processing.
+ * It does not try to infer plural possessives, detect language, or act as a
+ * general multilingual grammar engine. Inputs are trimmed before processing.
  *
  * @example
  * import Possessive from "possessive-js";
@@ -55,23 +42,26 @@ const ESZETT = "ß";
  *
  * possessive.makePossessive("Chris");
  * // => "Chris's"
+ *
+ * @example
+ * const possessive = new Possessive({ style: "alternative" });
+ *
+ * possessive.makePossessive("Chris");
+ * // => "Chris's"
  */
 class Possessive {
 	/**
 	 * Create a new possessive formatter.
 	 *
 	 * @param {PossessiveOptions} [options={}] Configuration options.
-	 * @throws {Error} Throws when `options` is not an object, when `style` is not
-	 * `standard` or `alternative`, or when the feature flags are not booleans.
+	 * @throws {Error} Throws when `options` is not an object or when `style` is not
+	 * `standard` or `alternative`.
 	 *
 	 * @example
 	 * const possessive = new Possessive();
 	 *
 	 * @example
-	 * const possessive = new Possessive({
-	 *   style: "alternative",
-	 *   enableGermanRules: false,
-	 * });
+	 * const possessive = new Possessive({ style: "alternative" });
 	 */
 	constructor(options = {}) {
 		this.options = this.normalizeOptions(options);
@@ -90,7 +80,6 @@ class Possessive {
 	 * The formatter trims the input, checks registered exceptions first, then
 	 * applies suffix rules:
 	 *
-	 * - nouns ending in `ß` become `noun'` when German rules are enabled
 	 * - nouns ending in `s` become `noun'` or `noun's` depending on `style`
 	 * - other nouns receive `'s`
 	 *
@@ -195,12 +184,6 @@ class Possessive {
 			);
 		}
 
-		for (const optionName of BOOLEAN_OPTIONS) {
-			if (typeof normalizedOptions[optionName] !== "boolean") {
-				throw new Error(`${optionName} option must be a boolean`);
-			}
-		}
-
 		return normalizedOptions;
 	}
 
@@ -220,10 +203,6 @@ class Possessive {
 	 * @returns {"'" | "'s"}
 	 */
 	selectSuffix(noun) {
-		if (this.options.enableGermanRules && noun.endsWith(ESZETT)) {
-			return "'";
-		}
-
 		if (noun.endsWith("s")) {
 			return this.options.style === "alternative" ? "'s" : "'";
 		}

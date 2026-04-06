@@ -2,12 +2,11 @@
 
 <dl>
 <dt><a href="#Possessive">Possessive</a></dt>
-<dd><p>Formats singular nouns and names into possessive form.</p>
+<dd><p>Formats singular English nouns and names into possessive form.</p>
 <p>The library is intentionally small and explicit. It handles a predictable
-set of English-oriented rules, a small set of exception words, and the
-<code>ß</code> suffix case when German rules are enabled.</p>
-<p>It does not try to infer plural possessives or perform full language
-detection. Inputs are trimmed before processing.</p>
+set of English-oriented rules and a small set of exception words.</p>
+<p>It does not try to infer plural possessives, detect language, or act as a
+general multilingual grammar engine. Inputs are trimmed before processing.</p>
 </dd>
 </dl>
 
@@ -22,14 +21,13 @@ detection. Inputs are trimmed before processing.</p>
 <a name="Possessive"></a>
 
 ## Possessive
-Formats singular nouns and names into possessive form.
+Formats singular English nouns and names into possessive form.
 
 The library is intentionally small and explicit. It handles a predictable
-set of English-oriented rules, a small set of exception words, and the
-`ß` suffix case when German rules are enabled.
+set of English-oriented rules and a small set of exception words.
 
-It does not try to infer plural possessives or perform full language
-detection. Inputs are trimmed before processing.
+It does not try to infer plural possessives, detect language, or act as a
+general multilingual grammar engine. Inputs are trimmed before processing.
 
 **Kind**: global class  
 
@@ -45,8 +43,8 @@ Create a new possessive formatter.
 
 **Throws**:
 
-- <code>Error</code> Throws when `options` is not an object, when `style` is not
-`standard` or `alternative`, or when the feature flags are not booleans.
+- <code>Error</code> Throws when `options` is not an object or when `style` is not
+`standard` or `alternative`.
 
 
 | Param | Type | Default | Description |
@@ -72,6 +70,13 @@ const possessive = new Possessive({ style: "alternative" });
 possessive.makePossessive("Chris");
 // => "Chris's"
 ```
+**Example**  
+```js
+const possessive = new Possessive({ style: "alternative" });
+
+possessive.makePossessive("Chris");
+// => "Chris's"
+```
 <a name="Possessive+makePossessive"></a>
 
 ### possessive.makePossessive(noun) ⇒ <code>string</code>
@@ -80,7 +85,6 @@ Convert a noun to its singular possessive form.
 The formatter trims the input, checks registered exceptions first, then
 applies suffix rules:
 
-- nouns ending in `ß` become `noun'` when German rules are enabled
 - nouns ending in `s` become `noun'` or `noun's` depending on `style`
 - other nouns receive `'s`
 
@@ -168,7 +172,4 @@ Options for [Possessive](#Possessive).
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | [style] | <code>&#x27;standard&#x27;</code> \| <code>&#x27;alternative&#x27;</code> | <code>&#x27;standard&#x27;</code> | Selects the suffix used for nouns ending in `s`. `standard` returns `Chris'` while `alternative` returns `Chris's`. |
-| [enableFrenchRules] | <code>boolean</code> | <code>true</code> | Reserved for compatibility with future language-specific rules. |
-| [enableGermanRules] | <code>boolean</code> | <code>true</code> | Enables special handling for nouns ending in `ß`, such as `Strauß -> Strauß'`. |
-| [enableNordicRules] | <code>boolean</code> | <code>true</code> | Reserved for compatibility with future language-specific rules. |
 

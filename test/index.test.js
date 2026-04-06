@@ -7,25 +7,14 @@ describe("Possessive", () => {
 
 			expect(possessive.options).toEqual({
 				style: "standard",
-				enableFrenchRules: true,
-				enableGermanRules: true,
-				enableNordicRules: true,
 			});
 		});
 
 		test("accepts explicit valid options", () => {
-			const possessive = new Possessive({
-				style: "alternative",
-				enableFrenchRules: false,
-				enableGermanRules: false,
-				enableNordicRules: false,
-			});
+			const possessive = new Possessive({ style: "alternative" });
 
 			expect(possessive.options).toEqual({
 				style: "alternative",
-				enableFrenchRules: false,
-				enableGermanRules: false,
-				enableNordicRules: false,
 			});
 		});
 
@@ -37,21 +26,6 @@ describe("Possessive", () => {
 				"invalid style",
 				{ style: "modern" },
 				"Style option must be either 'standard' or 'alternative'",
-			],
-			[
-				"non-boolean French flag",
-				{ enableFrenchRules: "yes" },
-				"enableFrenchRules option must be a boolean",
-			],
-			[
-				"non-boolean German flag",
-				{ enableGermanRules: 1 },
-				"enableGermanRules option must be a boolean",
-			],
-			[
-				"non-boolean Nordic flag",
-				{ enableNordicRules: "no" },
-				"enableNordicRules option must be a boolean",
 			],
 		])("rejects %s", (_label, options, message) => {
 			expect(() => new Possessive(options)).toThrow(message);
@@ -70,7 +44,7 @@ describe("Possessive", () => {
 			["cat", "cat's"],
 			["James", "James'"],
 			["Chris", "Chris'"],
-			["Strauß", "Strauß'"],
+			["Strauß", "Strauß's"],
 			["Müller", "Müller's"],
 			["François", "François'"],
 			["Lemieux", "Lemieux's"],
@@ -86,12 +60,6 @@ describe("Possessive", () => {
 
 			expect(alternative.makePossessive("James")).toBe("James's");
 			expect(alternative.makePossessive("Chris")).toBe("Chris's");
-		});
-
-		test("disables German Eszett handling when requested", () => {
-			const noGerman = new Possessive({ enableGermanRules: false });
-
-			expect(noGerman.makePossessive("Strauß")).toBe("Strauß's");
 		});
 
 		test.each([

@@ -2,9 +2,6 @@ export type PossessiveStyle = "standard" | "alternative";
 
 export interface PossessiveOptions {
 	style?: PossessiveStyle;
-	enableFrenchRules?: boolean;
-	enableGermanRules?: boolean;
-	enableNordicRules?: boolean;
 }
 
 declare class Possessive {
